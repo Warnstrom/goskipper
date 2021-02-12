@@ -1,0 +1,4 @@
+github.com/akavel/rsrc v0.10.1 h1:hCCPImjmFKVNGpeLZyTDRHEFC283DzyTXTo0cO0Rq9o=
+github.com/akavel/rsrc v0.10.1/go.mod h1:uLoCtb9J+EyAqh+26kdrTgmzRBFPGOolLWKpdxkKq+c=
+github.com/micmonay/keybd_event v1.1.0 h1:fQzkqiG/Siwji1Ju9NDkIb8FSFFlPU76YbJntrXdtQw=
+github.com/micmonay/keybd_event v1.1.0/go.mod h1:QS2Kfz0PbPezFqMPEot+l/cK78/tHLZtZ7AbYUCRKsQ=
