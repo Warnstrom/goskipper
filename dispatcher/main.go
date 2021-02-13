@@ -17,7 +17,7 @@ func main() {
 		fmt.Print("Couldn't connect to the server")
 	}
 	for {
-		hook.Register(hook.KeyDown, []string{"ctrl", "shift", "0x189"}, func(e hook.Event) {
+		hook.Register(hook.KeyDown, []string{"shift", "space"}, func(e hook.Event) {
 
 			fmt.Fprintf(conn, "text"+"\n")
 			hook.End()
