@@ -14,6 +14,11 @@ import (
 	"github.com/micmonay/keybd_event"
 )
 
+// PowerShell is
+type PowerShell struct {
+	powerShell string
+}
+
 func main() {
 	tcpAddr, err := net.ResolveTCPAddr("tcp", "jonatan.net:9009")
 	if err != nil {
@@ -33,7 +38,7 @@ func main() {
 		}
 		messageWithoutExcessBytes := bytes.Trim(buff[:], "\x00")
 
-		var message string = BytesToString(messageWithoutExcessBytes[:])
+		var message string = BytesToString(messageWithoutExcessBytes[:]) // Convert to string
 		println(message)
 		if strings.Contains(message, "skip") {
 			println("Skipped song")
@@ -71,11 +76,6 @@ func skip() {
 	}
 	kb.SetKeys(keybd_event.VK_MEDIA_NEXT_TRACK)
 	kb.Press()
-}
-
-// PowerShell is
-type PowerShell struct {
-	powerShell string
 }
 
 // New is
