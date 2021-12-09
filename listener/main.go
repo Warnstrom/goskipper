@@ -3,30 +3,28 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"log"
 	"net"
 	"os/exec"
-	"reflect"
 	"strconv"
 	"strings"
 	"time"
-	"unsafe"
 
 	"github.com/micmonay/keybd_event"
 )
 
-// PowerShell is
 type PowerShell struct {
 	powerShell string
 }
 
 func main() {
-	tcpAddr, err := net.ResolveTCPAddr("tcp", "jonatan.net:9009")
+	tcpAddr, err := net.ResolveTCPAddr("tcp", "jonatan.me:9009")
 	if err != nil {
-		fmt.Print("Couldn't resolve the address")
+		log.Println("Couldn't resolve the address")
 	}
 	conn, err := net.DialTCP("tcp", nil, tcpAddr)
 	if err != nil {
-		fmt.Print("Couldn't connect to the server")
+		log.Println("Couldn't connect to the server")
 	}
 	posh := New()
 	for {
@@ -34,15 +32,15 @@ func main() {
 		var buff [30]byte
 		_, err = conn.Read(buff[0:])
 		if err != nil {
-			fmt.Print("Couldn't receive message")
+			log.Println("Couldn't receive message")
 		}
-		messageWithoutExcessBytes := bytes.Trim(buff[:], "\x00")
+		var messageWithoutExcessBytes []byte = bytes.Trim(buff[:], "\x00")
 
 		var message string = BytesToString(messageWithoutExcessBytes[:]) // Convert to string
-		println(message)
+		log.Println(message)
 		if strings.Contains(message, "skip") {
-			println("Skipped song")
-			skip()
+			log.Println("Skipped song")
+			go skip()
 		} else if strings.Contains(message, "timesync") {
 			t := cleanUnixString(message)
 			command := fmt.Sprintf("Set-Date %d:%d:%d", t.Hour(), t.Minute(), t.Second())
@@ -55,18 +53,18 @@ func main() {
 }
 
 func cleanUnixString(message string) time.Time {
-	var timeString = strings.Split(message, ":")
-	timeUncleaned := timeString[1]
-	timeCleaned := timeUncleaned[:len(timeUncleaned)-1]
-	timeUnix, _ := strconv.ParseInt(timeCleaned, 10, 64)
+	var (
+		timeString    = strings.Split(message, ":")
+		timeUncleaned = timeString[1]
+		timeCleaned   = timeUncleaned[:len(timeUncleaned)-1]
+		timeUnix, _   = strconv.ParseInt(timeCleaned, 10, 64)
+	)
 	return time.Unix(timeUnix/1000, 0)
 }
 
-// BytesToString is
 func BytesToString(b []byte) string {
-	bh := (*reflect.SliceHeader)(unsafe.Pointer(&b))
-	sh := reflect.StringHeader{bh.Data, bh.Len}
-	return *(*string)(unsafe.Pointer(&sh))
+	var strToConvert string = bytes.NewBuffer(b).String()
+	return strToConvert
 }
 
 func skip() {
@@ -78,7 +76,6 @@ func skip() {
 	kb.Press()
 }
 
-// New is
 func New() *PowerShell {
 	ps, _ := exec.LookPath("powershell.exe")
 	return &PowerShell{
